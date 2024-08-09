@@ -33,7 +33,12 @@ const products = [
     },
 ];
 
-const card = [];
+const cart = [
+    {
+        id: 4,
+        amount: 5,
+    },
+];
 
 //home api
 app.get("/", (req, res) => {
@@ -55,37 +60,61 @@ app.get("/api/products/:id", (req, res) => {
     res.send(product);
 });
 
-app.put("/api/products/:id/:howMuch"),
-    (req, res) => {
-        //find the product with id
-        const product = products.find((c) => c.id === parseInt(req.params.id));
-        //validate is in stock
-        if (!product) {
-            console.log("Product not found");
-            return res
-                .status(404)
-                .send("the product with this id was not found");
-        }
+//add item to the cart
+app.post("/api/cart", (req, res) => {
+    const { productId, amount } = req.body;
 
-        // Parse the howMuch parameter to an integer
-        const howMuch = parseInt(req.params.howMuch);
+    if (!productId || !amount) {
+        return res.status(400).send("Product ID and valid amount are required");
+    } else if (amount <= 0) {
+        return res
+            .status(400)
+            .send("There is not enough of this product in stock");
+    }
 
-        //check the howMuch
-        if (isNaN(howMuch) || howMuch <= 0) {
-            return res
-                .status(400)
-                .send("The amount must be a positive integer");
-        }
+    const cartItem = cart.find((item) => item.productId === productId);
+    const product = products.find((c) => c.id === parseInt(req.params.id));
+    if (cartItem) {
+        cartItem.amount += amount;
 
-        if (product.isInstock < howMuch) {
-            return res.status(400).send("not enough in the stock");
-        }
-        // update the card => card + item
-        card.push({ ...product, amount: howMuch });
-        //products.isInstock - howMuch
-        product.isInstock -= howMuch;
-        res.send(product);
-    };
+        product.isInstock = -amount;
+    } else {
+        cart.push({ productId, amount });
+    }
+    console.log(cart);
+    console.log(products);
+    res.send({ success: true, cart });
+});
+
+// get the cart
+app.get("/api/cart", (req, res) => {
+    res.send(cart);
+});
+
+// order confirmation
+app.post("/api/checkout", (req, res) => {
+    if (cart.length === 0) {
+        return res.status(400).send("The cart is empty");
+    }
+
+    // TODO  add confirmation logic
+    cart = []; // then clean the cart
+    res.send("Order confirmed! The cart is now empty.");
+});
+
+// delete an item from the cat
+app.delete("/api/cart/:id", (req, res) => {
+    const productId = parseInt(req.params.id);
+    const initialCartLength = cart.length;
+
+    cart = cart.filter((item) => item.productId !== productId);
+
+    if (cart.length === initialCartLength) {
+        return res.status(404).send("Product not found in cart");
+    }
+
+    res.send({ success: true, cart });
+});
 
 //port env
 const port = process.env.PORT || 3000;

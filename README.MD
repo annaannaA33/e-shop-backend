@@ -2,6 +2,7 @@ npm init --yes
 
 npm install express
 npm install --save-dev nodem
+npm i nodemon
 
 e-shop-backend
 -node modules
