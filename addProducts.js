@@ -4,12 +4,13 @@ const insertProducts = () => {
     const products = [
         {
             brand: "Apple",
-            title: "iPhone 13 Pro",
+            title: "iPhone 15",
             picture: "link",
             color: "Graphite",
             price: 100,
-            shortDescription: "some description1",
-            isInstock: 10,
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
+            stockAmount: 10,
         },
         {
             brand: "Samsung",
@@ -18,7 +19,7 @@ const insertProducts = () => {
             color: "Phantom Gray",
             price: 799,
             shortDescription: "some description2",
-            isInstock: 20,
+            stockAmount: 20,
         },
         {
             brand: "Sony",
@@ -27,7 +28,7 @@ const insertProducts = () => {
             color: "White",
             price: 499,
             shortDescription: "some description3",
-            isInstock: 8,
+            stockAmount: 8,
         },
         {
             brand: "Dell",
@@ -36,7 +37,7 @@ const insertProducts = () => {
             color: "Silver",
             price: 1200,
             shortDescription: "some description4",
-            isInstock: 5,
+            stockAmount: 5,
         },
     ];
 
@@ -51,7 +52,7 @@ const insertProducts = () => {
                 product.color,
                 product.price,
                 product.shortDescription,
-                product.isInstock,
+                product.stockAmount,
             ],
             (err) => {
                 if (err) {

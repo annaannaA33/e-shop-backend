@@ -7,22 +7,13 @@ npm install sqlite3
 
 npm install better-sqlite3
 
-e-shop-backend
--node modules
--crs
----contrilers/
--productHendler.js
----routes/
--productController
----models/
--products.js
-packaje.json
-packaje-lock.json
-
 ---
 
 run
 nodemon index.js
+
+to add products
+node addProducts.js
 
 Display all e-shop products on the main e-shop page “Mobile phones and accessories”.
 

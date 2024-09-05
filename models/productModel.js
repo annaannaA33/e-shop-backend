@@ -11,7 +11,7 @@ const createProductTable = () => {
         color TEXT NOT NULL,
         price INTEGER NOT NULL,
         shortDescription TEXT,
-        isInstock INTEGER NOT NULL
+        stockAmount INTEGER NOT NULL
 
 
     )`;

@@ -56,7 +56,7 @@ app.get("/api/products/:id", (req, res) => {
 });
 
 //make the order
-app.post("/api/createdOrder", (req, res) => {
+app.post("/api/orders", (req, res) => {
     const { productId, amount } = req.body;
 
     if (!productId || !amount) {
@@ -67,17 +67,27 @@ app.post("/api/createdOrder", (req, res) => {
             .send("There is not enough of this product in stock");
     }
     const selectedItem = 0;
+    selectedItem.amount += amount;
+
     //const selectedItem = createdOrder.find((item) => item.productId === productId);
     const product = products.find((c) => c.id === parseInt(req.body.productId));
     //if (selectedItem) {
-    selectedItem.amount += amount;
 
-    product.isInstock -= amount;
+    product.stockAmount -= amount;
 
     createdOrder.push({ productId, amount });
 
     console.log(createdOrder);
     console.log(products);
+
+    const microserviceResponse = await fetch("localhost/:3333", {
+        data: {
+        eventType: 'orderMade',
+        firstName: ...,
+        last\name: ...,
+    }
+    })
+
     res.send({ success: true, createdOrder });
 });
 
