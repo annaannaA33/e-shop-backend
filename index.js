@@ -1,44 +1,39 @@
 const express = require("express");
 const app = express();
-
-app.use(express.json());
 const products = [
     {
         id: 1,
         name: "product1",
         price: 100,
-        description: "some description",
+        description: "some description1",
         isInstock: 10,
     },
     {
         id: 2,
         name: "product2",
         price: 400,
-        description: "some description",
+        description: "some description2",
         isInstock: 10,
     },
     {
         id: 3,
         name: "product3",
         price: 300,
-        description: "some description",
+        description: "some description3",
         isInstock: 10,
     },
     {
         id: 4,
         name: "product4",
         price: 500,
-        description: "some description",
+        description: "some description4",
         isInstock: 10,
     },
 ];
 
-const cart = [
-    {
-        id: 4,
-        amount: 5,
-    },
-];
+const createdOrder = [];
+
+const userInformation = {};
 
 //home api
 app.get("/", (req, res) => {
@@ -49,7 +44,7 @@ app.get("/api/products", (req, res) => {
     res.send(products);
 });
 
-// /api/products/1
+// /api/products/1  here the al info about the product
 
 app.get("/api/products/:id", (req, res) => {
     const product = products.find((c) => c.id === parseInt(req.params.id));
@@ -60,8 +55,8 @@ app.get("/api/products/:id", (req, res) => {
     res.send(product);
 });
 
-//add item to the cart
-app.post("/api/cart", (req, res) => {
+//make the order
+app.post("/api/createdOrder", (req, res) => {
     const { productId, amount } = req.body;
 
     if (!productId || !amount) {
@@ -71,24 +66,24 @@ app.post("/api/cart", (req, res) => {
             .status(400)
             .send("There is not enough of this product in stock");
     }
+    const selectedItem = 0;
+    //const selectedItem = createdOrder.find((item) => item.productId === productId);
+    const product = products.find((c) => c.id === parseInt(req.body.productId));
+    //if (selectedItem) {
+    selectedItem.amount += amount;
 
-    const cartItem = cart.find((item) => item.productId === productId);
-    const product = products.find((c) => c.id === parseInt(req.params.id));
-    if (cartItem) {
-        cartItem.amount += amount;
+    product.isInstock -= amount;
 
-        product.isInstock = -amount;
-    } else {
-        cart.push({ productId, amount });
-    }
-    console.log(cart);
+    createdOrder.push({ productId, amount });
+
+    console.log(createdOrder);
     console.log(products);
-    res.send({ success: true, cart });
+    res.send({ success: true, createdOrder });
 });
 
-// get the cart
-app.get("/api/cart", (req, res) => {
-    res.send(cart);
+// get the order deteils
+app.get("/api/createdOrder", (req, res) => {
+    res.send(createdOrder);
 });
 
 // order confirmation
@@ -98,22 +93,12 @@ app.post("/api/checkout", (req, res) => {
     }
 
     // TODO  add confirmation logic
+    // проверить наличие userInformation всех данных
+
+    //отправить имеил со статусом
+    //изменить статус заказа
     cart = []; // then clean the cart
     res.send("Order confirmed! The cart is now empty.");
-});
-
-// delete an item from the cat
-app.delete("/api/cart/:id", (req, res) => {
-    const productId = parseInt(req.params.id);
-    const initialCartLength = cart.length;
-
-    cart = cart.filter((item) => item.productId !== productId);
-
-    if (cart.length === initialCartLength) {
-        return res.status(404).send("Product not found in cart");
-    }
-
-    res.send({ success: true, cart });
 });
 
 //port env
