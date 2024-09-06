@@ -6,7 +6,17 @@ const insertProducts = () => {
             brand: "Apple",
             title: "iPhone 15",
             picture: "link",
-            color: "Graphite",
+            color: "Black",
+            price: 100,
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
+            stockAmount: 10,
+        },
+        {
+            brand: "Apple",
+            title: "iPhone 15",
+            picture: "link",
+            color: "Blue",
             price: 100,
             shortDescription:
                 "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
@@ -14,35 +24,98 @@ const insertProducts = () => {
         },
         {
             brand: "Samsung",
-            title: "Galaxy S21",
+            title: "Galaxy S23 FE",
             picture: "link",
-            color: "Phantom Gray",
+            color: "Black",
             price: 799,
-            shortDescription: "some description2",
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
+            stockAmount: 20,
+        },
+        {
+            brand: "Samsung",
+            title: "Galaxy S23 FE",
+            picture: "link",
+            color: "Blue",
+            price: 799,
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
             stockAmount: 20,
         },
         {
             brand: "Sony",
-            title: "PlayStation 5",
+            title: "Xperia 10 V",
             picture: "link",
-            color: "White",
+            color: "Blue",
             price: 499,
-            shortDescription: "some description3",
-            stockAmount: 8,
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
+            stockAmount: 0,
         },
         {
-            brand: "Dell",
-            title: "XPS 13",
+            brand: "Sony",
+            title: "Xperia 10 V",
             picture: "link",
-            color: "Silver",
+            color: "Pink",
+            price: 499,
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
+            stockAmount: 0,
+        },
+        {
+            brand: "Xiaomi",
+            title: "Redmi Note 13",
+            picture: "link",
+            color: "Black",
             price: 1200,
-            shortDescription: "some description4",
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
+            stockAmount: 5,
+        },
+        {
+            brand: "Xiaomi",
+            title: "Redmi Note 13",
+            picture: "link",
+            color: "Yellow",
+            price: 1200,
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
+            stockAmount: 5,
+        },
+        {
+            brand: "Xiaomi",
+            title: "Redmi Note 13",
+            picture: "link",
+            color: "Pink",
+            price: 1200,
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
+            stockAmount: 5,
+        },
+        {
+            brand: "OnePlus",
+            title: "Nord 3",
+            picture: "link",
+            color: "Pink",
+            price: 1200,
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
+            stockAmount: 5,
+        },
+        {
+            brand: "OnePlus",
+            title: "Nord 3",
+            picture: "link",
+            color: "Black",
+            price: 1200,
+            shortDescription:
+                "Optional body text lorem ipsum dolor sit amet, consectetur adipiscing eli.",
             stockAmount: 5,
         },
     ];
 
     products.forEach((product) => {
-        const query = `INSERT INTO products (brand, title, picture, color, price, shortDescription, isInstock) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        const query = `INSERT INTO products (brand, title, picture, color, price, shortDescription, stockAmount) VALUES (?, ?, ?, ?, ?, ?, ?)`;
         db.run(
             query,
             [
@@ -58,7 +131,9 @@ const insertProducts = () => {
                 if (err) {
                     console.error("Error adding product:", err.message);
                 } else {
-                    console.log(`product ${product.name} was added to the db.`);
+                    console.log(
+                        `product ${product.title} was added to the db.`
+                    );
                 }
             }
         );

@@ -7,8 +7,7 @@ npm install sqlite3
 
 npm install better-sqlite3
 
----
-
+--
 run
 nodemon index.js
 
