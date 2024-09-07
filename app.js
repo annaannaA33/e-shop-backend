@@ -74,7 +74,10 @@ app.post("/api/orders", (req, res) => {
                         .send("Error saving user to the database.");
                 }
 
-                // const userId = this.lastID;
+                const userId = this.lastID;
+
+                // userId
+                console.log("New User ID:", userId);
 
                 // Creating an order in the database
 
@@ -89,19 +92,20 @@ app.post("/api/orders", (req, res) => {
                     // Adding order details
 
                     const orderDetailsQuery = `
-                    INSERT INTO orderDetails (user_id, order_id, item_id, item_quantity, total_prise, order_created_date, order_modify_date, orser_status)
-                    VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'), ?)
+                    INSERT INTO orderDetails (order_id, product_id, total_prise, order_created_date, order_modify_date, order_status)
+                    VALUES (?, ?, ?, datetime('now'), datetime('now'), ?)
                 `;
-                    const totalPrice = product.price;
+                    const totalPrice = product.price * 1; // Assuming a default quantity of 1
                     db.run(
                         orderDetailsQuery,
-                        [userId, orderId, productId, totalPrice, "confirmed"],
+                        [orderId, productId, totalPrice, "confirmed"],
                         (err) => {
                             if (err) {
                                 return res
                                     .status(500)
                                     .send("Error saving order details.");
                             }
+                            console.log("New order:", userId);
 
                             // Updating the quantity of goods in the database
 
@@ -137,6 +141,9 @@ app.post("/api/orders", (req, res) => {
         );
     });
 });
+
+//показать отдельный товар,в том числе наличие
+
 //port env
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

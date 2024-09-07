@@ -58,13 +58,15 @@ const createOrdersTable = () => {
 const createOrderDetailsTable = () => {
     const query = `
     CREATE TABLE IF NOT EXISTS orderDetails (
-    product_id INTERNAL KEY,
-    product_quantity INTEGER NOT NULL,
+    order_id INTEGER,
+    product_id INTEGER,
     total_prise INTEGER NOT NULL,
     order_created_date TEXT DEFAULT CURRENT_TIMESTAMP,
     order_modify_date TEXT DEFAULT CURRENT_TIMESTAMP,
     orser_status TEXT NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES orderDetails(order_id))`;
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES products(item_id)
+    )`;
     db.run(query, (err) => {
         if (err) {
             console.error("Error creating orders table:", err);
