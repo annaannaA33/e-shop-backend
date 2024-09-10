@@ -26,6 +26,82 @@ app.get("/api/products", (req, res) => {
     });
 });
 
+// API endpoint to gett order with order_id
+
+app.get("/api/products/:id", (req, res) => {
+    const productId = req.params.id;
+    //Call function to get info about the product
+    productModel.getProductById(productId, (err, product) => {
+        if (err) {
+            return res
+                .status(500)
+                .send("Error retrieving product from the database.");
+        }
+
+        if (!product) {
+            return res.status(404).send("Product not found.");
+        }
+        // Send the product details as a response
+        res.send({
+            success: true,
+            message: "Product details:",
+            product: {
+                id: product.product_id,
+                brand: product.brand,
+                title: product.title,
+                picture: product.picture,
+                color: product.color,
+                price: product.price,
+                shortDescription: product.shortDescription,
+                stockAmount: product.stockAmount,
+            },
+        });
+    });
+});
+
+app.get("/api/orders/:id", (req, res) => {
+    const orderId = req.params.id;
+
+    // Call the getOrderById function
+    productModel.getOrderById(orderId, (err, order) => {
+        if (err) {
+            return res
+                .status(500)
+                .send("Error retrieving order from the database.");
+        }
+
+        if (!order) {
+            return res.status(404).send("Order not found.");
+        }
+
+        // Send the order details as a response
+        res.send({
+            success: true,
+            order: {
+                orderId: order.order_id,
+                user: {
+                    id: order.user_id,
+                    name: order.user_name,
+                    surname: order.user_surname,
+                    email: order.user_email,
+                    phone: order.user_phone,
+                },
+                product: {
+                    id: order.product_id,
+                    title: order.title,
+                    brand: order.brand,
+                    color: order.color,
+                    price: order.price,
+                },
+                total_prise: order.total_prise,
+                order_created_date: order.order_created_date,
+                order_modify_date: order.order_modify_date,
+                order_status: order.order_status,
+            },
+        });
+    });
+});
+
 app.post("/api/orders", (req, res) => {
     const { productId, color, userName, userSurname, userEmail, userPhone } =
         req.body;
@@ -41,7 +117,7 @@ app.post("/api/orders", (req, res) => {
 
     // Getting product data from the database
 
-    const query = "SELECT * FROM products WHERE item_id = ?";
+    const query = "SELECT * FROM products WHERE product_id = ?";
 
     db.get(query, [productId], (err, product) => {
         if (err) {
@@ -105,35 +181,30 @@ app.post("/api/orders", (req, res) => {
                                     .status(500)
                                     .send("Error saving order details.");
                             }
-                            console.log("New order:", userId);
+                            console.log("New order: userId:", userId);
 
                             // Updating the quantity of goods in the database
 
                             const updateStockQuery =
-                                "UPDATE products SET stockAmount = stockAmount - ? WHERE item_id = ?";
-                            db.run(
-                                updateStockQuery,
-                                [amount, productId],
-                                (err) => {
-                                    if (err) {
-                                        return res
-                                            .status(500)
-                                            .send(
-                                                "Error updating product stock."
-                                            );
-                                    }
-
-                                    // Sending a response to the client
-
-                                    res.send({
-                                        success: true,
-                                        message:
-                                            "Order successfully created and stock updated",
-                                        orderId: orderId,
-                                        userId: userId,
-                                    });
+                                "UPDATE products SET stockAmount = stockAmount - 1 WHERE product_id = ?";
+                            db.run(updateStockQuery, [productId], (err) => {
+                                if (err) {
+                                    return res
+                                        .status(500)
+                                        .send("Error updating product stock.");
                                 }
-                            );
+                                console.log(productId, product.stockAmount);
+
+                                // Sending a response to the client
+
+                                res.send({
+                                    success: true,
+                                    message:
+                                        "Order successfully created and stock updated",
+                                    orderId: orderId,
+                                    userId: userId,
+                                });
+                            });
                         }
                     );
                 });

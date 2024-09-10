@@ -4,7 +4,7 @@ const db = require("./database");
 const createProductTable = () => {
     const query = `
     CREATE TABLE IF NOT EXISTS products (
-        item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_id INTEGER PRIMARY KEY AUTOINCREMENT,
         brand TEXT NOT NULL,
         title TEXT NOT NULL,
         picture TEXT NOT NULL,
@@ -63,9 +63,9 @@ const createOrderDetailsTable = () => {
     total_prise INTEGER NOT NULL,
     order_created_date TEXT DEFAULT CURRENT_TIMESTAMP,
     order_modify_date TEXT DEFAULT CURRENT_TIMESTAMP,
-    orser_status TEXT NOT NULL,
+    order_status TEXT NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
-    FOREIGN KEY (product_id) REFERENCES products(item_id)
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
     )`;
     db.run(query, (err) => {
         if (err) {
@@ -87,6 +87,63 @@ const getAllProducts = (callback) => {
     });
 };
 
+const getProductById = (productId, callback) => {
+    const query = `SELECT * FROM products WHERE product_id = ?`;
+    db.get(query, [productId], (err, product) => {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!product) {
+            return callback(null, null); // product not found
+        }
+
+        callback(null, product); // Return product details
+    });
+};
+
+const getOrderById = (orderId, callback) => {
+    const query = `
+        SELECT 
+            orders.order_id,
+            orders.user_id,
+            users.user_name,
+            users.user_surname,
+            users.user_email,
+            users.user_phone,
+            products.product_id,
+            products.title,
+            products.brand,
+            products.color,
+            products.price,
+            orderDetails.total_prise,
+            orderDetails.order_created_date,
+            orderDetails.order_modify_date,
+            orderDetails.order_status
+        FROM 
+            orders
+        JOIN 
+            orderDetails ON orders.order_id = orderDetails.order_id
+        JOIN 
+            products ON orderDetails.product_id = products.product_id
+        JOIN 
+            users ON orders.user_id = users.user_id
+        WHERE 
+            orders.order_id = ?`;
+
+    db.get(query, [orderId], (err, order) => {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!order) {
+            return callback(null, null); // Order not found
+        }
+
+        callback(null, order); // Return order details
+    });
+};
+
 module.exports = {
     createProductTable,
     getAllProducts,
@@ -94,4 +151,6 @@ module.exports = {
     createOrdersTable,
     createOrderDetailsTable,
     createUsersTable,
+    getOrderById,
+    getProductById,
 };
