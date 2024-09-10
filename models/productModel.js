@@ -60,7 +60,7 @@ const createOrderDetailsTable = () => {
     CREATE TABLE IF NOT EXISTS orderDetails (
     order_id INTEGER,
     product_id INTEGER,
-    total_prise INTEGER NOT NULL,
+    total_price INTEGER NOT NULL,
     order_created_date TEXT DEFAULT CURRENT_TIMESTAMP,
     order_modify_date TEXT DEFAULT CURRENT_TIMESTAMP,
     order_status TEXT NOT NULL,
@@ -116,7 +116,7 @@ const getOrderById = (orderId, callback) => {
             products.brand,
             products.color,
             products.price,
-            orderDetails.total_prise,
+            orderDetails.total_price,
             orderDetails.order_created_date,
             orderDetails.order_modify_date,
             orderDetails.order_status

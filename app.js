@@ -59,6 +59,19 @@ app.get("/api/products/:id", (req, res) => {
     });
 });
 
+app.get("/api/stock/:id", (req, res) => {
+    const productId = req.params.id;
+    productModel.getProductById(productId, (err, product) => {
+        if (err) {
+            return res.status(500).send("Error retrieving product.");
+        }
+        if (!product) {
+            return res.status(404).send("Product not found.");
+        }
+        res.send({ stockAmount: product.stockAmount });
+    });
+});
+
 app.get("/api/orders/:id", (req, res) => {
     const orderId = req.params.id;
 
@@ -93,7 +106,7 @@ app.get("/api/orders/:id", (req, res) => {
                     color: order.color,
                     price: order.price,
                 },
-                total_prise: order.total_prise,
+
                 order_created_date: order.order_created_date,
                 order_modify_date: order.order_modify_date,
                 order_status: order.order_status,
@@ -103,12 +116,11 @@ app.get("/api/orders/:id", (req, res) => {
 });
 
 app.post("/api/orders", (req, res) => {
-    const { productId, color, userName, userSurname, userEmail, userPhone } =
-        req.body;
+    const { productId, userName, userSurname, userEmail, userPhone } = req.body;
 
     // Validation of entered data
 
-    if (!productId || !color) {
+    if (!productId) {
         return res.status(400).send("Product ID and valid color are required");
     }
     if (!userName || !userSurname || !userEmail || !userPhone) {
@@ -168,7 +180,7 @@ app.post("/api/orders", (req, res) => {
                     // Adding order details
 
                     const orderDetailsQuery = `
-                    INSERT INTO orderDetails (order_id, product_id, total_prise, order_created_date, order_modify_date, order_status)
+                    INSERT INTO orderDetails (order_id, product_id, total_price, order_created_date, order_modify_date, order_status)
                     VALUES (?, ?, ?, datetime('now'), datetime('now'), ?)
                 `;
                     const totalPrice = product.price * 1; // Assuming a default quantity of 1
@@ -212,8 +224,6 @@ app.post("/api/orders", (req, res) => {
         );
     });
 });
-
-//показать отдельный товар,в том числе наличие
 
 //port env
 const port = process.env.PORT || 3000;
