@@ -5,14 +5,16 @@ const createProductTable = () => {
     const query = `
     CREATE TABLE IF NOT EXISTS products (
         product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_type TEXT NOT NULL,
         brand TEXT NOT NULL,
         title TEXT NOT NULL,
         picture TEXT NOT NULL,
         color TEXT NOT NULL,
         price INTEGER NOT NULL,
         shortDescription TEXT,
-        stockAmount INTEGER NOT NULL
-    )`;
+        stockAmount INTEGER NOT NULL,
+        popularity_score INTEGER DEFAULT 0
+        )`;
     db.run(query, (err) => {
         if (err) {
             console.error("Error creating product table:", err);
@@ -144,6 +146,16 @@ const getOrderById = (orderId, callback) => {
     });
 };
 
+const increasePopularityScore = (productId, callback) => {
+    const query = `UPDATE products SET popularity_score = popularity_score + 1 WHERE product_id = ?`;
+    db.run(query, [productId], (err) => {
+        if (err) {
+            return callback(err);
+        }
+        callback(nall);
+    });
+};
+
 module.exports = {
     createProductTable,
     getAllProducts,
@@ -153,4 +165,5 @@ module.exports = {
     createUsersTable,
     getOrderById,
     getProductById,
+    increasePopularityScore,
 };

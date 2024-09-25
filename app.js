@@ -207,12 +207,22 @@ app.post("/api/orders", (req, res) => {
                                 }
                                 console.log(productId, product.stockAmount);
 
+                                increasePopularityScore(productId, (err) => {
+                                    if (err) {
+                                        return res
+                                            .status(500)
+                                            .send(
+                                                "Error updating product popularity."
+                                            );
+                                    }
+                                });
+
                                 // Sending a response to the client
 
                                 res.send({
                                     success: true,
                                     message:
-                                        "Order successfully created and stock updated",
+                                        "Order successfully created, stock updated, popularity updated",
                                     orderId: orderId,
                                     userId: userId,
                                 });
