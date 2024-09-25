@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const productModel = require("./models/productModel");
+const products = require("./routers/products");
 const db = require("./models/database");
 // import { productModel } from /... <-- best
 // expot const productModel = () => {...}
@@ -15,12 +16,35 @@ productModel.createProductTable();
 productModel.createUsersTable();
 productModel.createOrdersTable();
 productModel.createOrderDetailsTable();
+//products.getProductList();
+
+const getProductList = (filter = {}, callback) => {
+    let query = "SELECT * FROM products";
+    let params = [];
+
+    if (filter.product_type) {
+        query += " WHERE product_type = ?";
+        params.push(filter.product_type);
+    }
+
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            return callback(err, null);
+        }
+        if (rows.length === 0) {
+            callback(null, []);
+        } else {
+            callback(null, rows);
+        }
+    });
+};
 
 //gett all products
 app.get("/api/products", (req, res) => {
-    productModel.getAllProducts((err, products) => {
+    const productType = req.query.product_type;
+    getProductList({ product_type: productType }, (err, products) => {
         if (err) {
-            return res.status(500).send("error.");
+            return res.status(500).send("Error retrieving products.");
         }
         res.send(products);
     });
