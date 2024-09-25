@@ -9,6 +9,22 @@ const getProductList = (filter = {}, callback) => {
         params.push(filter.product_type);
     }
 
+    if (filter.color) {
+        query += " AND color = ?";
+        params.push(filter.color);
+    }
+
+    if (filter.priceRange) {
+        const { min, max } = filter.priceRange;
+        query += " AND price BETWEEN ? AND ?";
+        params.push(min, max);
+    }
+
+    if (filter.brand) {
+        query += " AND brand = ?";
+        params.push(filter.brand);
+    }
+
     db.all(query, params, (err, rows) => {
         if (err) {
             return callback(err, null);

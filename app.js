@@ -26,6 +26,21 @@ const getProductList = (filter = {}, callback) => {
         query += " WHERE product_type = ?";
         params.push(filter.product_type);
     }
+    if (filter.color) {
+        query += " AND color = ?";
+        params.push(filter.color);
+    }
+
+    if (filter.priceRange) {
+        const { min, max } = filter.priceRange;
+        query += " AND price BETWEEN ? AND ?";
+        params.push(min, max);
+    }
+
+    if (filter.brand) {
+        query += " AND brand = ?";
+        params.push(filter.brand);
+    }
 
     db.all(query, params, (err, rows) => {
         if (err) {
@@ -41,8 +56,16 @@ const getProductList = (filter = {}, callback) => {
 
 //gett all products
 app.get("/api/products", (req, res) => {
-    const productType = req.query.product_type;
-    getProductList({ product_type: productType }, (err, products) => {
+    const filter = {
+        product_type: req.query.product_type,
+        color: req.query.color,
+        brand: req.query.brand,
+        priceRange: {
+            min: req.query.min_price ? parseInt(req.query.min_price) : 0,
+            max: req.query.max_price ? parseInt(req.query.max_price) : Infinity,
+        },
+    };
+    getProductList(filter, (err, products) => {
         if (err) {
             return res.status(500).send("Error retrieving products.");
         }
