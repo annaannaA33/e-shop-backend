@@ -126,7 +126,7 @@ const insertProducts = () => {
         {
             product_type: "Accessories",
             brand: "OnePlus",
-            title: "case for Redmi Note 13",
+            title: "Case for Redmi Note 13",
             picture: "link",
             color: "Black",
             price: 50,

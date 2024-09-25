@@ -146,13 +146,13 @@ const getOrderById = (orderId, callback) => {
     });
 };
 
-const increasePopularityScore = (productId, callback) => {
+const increasePopularityScore = (productId, callback = () => {}) => {
     const query = `UPDATE products SET popularity_score = popularity_score + 1 WHERE product_id = ?`;
     db.run(query, [productId], (err) => {
         if (err) {
             return callback(err);
         }
-        callback(nall);
+        callback(null);
     });
 };
 

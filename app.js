@@ -10,7 +10,7 @@ const db = require("./models/database");
 // module.exports
 
 app.use(express.json());
-
+productModel.increasePopularityScore();
 productModel.createProductTable();
 productModel.createUsersTable();
 productModel.createOrdersTable();
@@ -47,6 +47,7 @@ app.get("/api/products/:id", (req, res) => {
             message: "Product details:",
             product: {
                 id: product.product_id,
+                product: product.product_type,
                 brand: product.brand,
                 title: product.title,
                 picture: product.picture,
@@ -54,7 +55,15 @@ app.get("/api/products/:id", (req, res) => {
                 price: product.price,
                 shortDescription: product.shortDescription,
                 stockAmount: product.stockAmount,
+                popularity: product.popularity_score,
             },
+        });
+        productModel.increasePopularityScore(productId, (err) => {
+            if (err) {
+                return res
+                    .status(500)
+                    .send("Error updating product popularity.");
+            }
         });
     });
 });
@@ -207,15 +216,18 @@ app.post("/api/orders", (req, res) => {
                                 }
                                 console.log(productId, product.stockAmount);
 
-                                increasePopularityScore(productId, (err) => {
-                                    if (err) {
-                                        return res
-                                            .status(500)
-                                            .send(
-                                                "Error updating product popularity."
-                                            );
+                                productModel.increasePopularityScore(
+                                    productId,
+                                    (err) => {
+                                        if (err) {
+                                            return res
+                                                .status(500)
+                                                .send(
+                                                    "Error updating product popularity."
+                                                );
+                                        }
                                     }
-                                });
+                                );
 
                                 // Sending a response to the client
 
