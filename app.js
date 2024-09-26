@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
 const productModel = require("./models/productModel");
-const products = require("./routers/products");
+const { getProductList } = require("./routers/products");
 const db = require("./models/database");
+const logger = require("./logger/logger");
 // import { productModel } from /... <-- best
 // expot const productModel = () => {...}
 // import productModeeeel from ...
@@ -17,14 +18,27 @@ productModel.createUsersTable();
 productModel.createOrdersTable();
 productModel.createOrderDetailsTable();
 
-// to test filters
+// to use filters
 // http://localhost:3000/api/products?color=Black&min_price=0&max_price=100
 // http://localhost:3000/api/products?color=Black
 // http://localhost:3000/api/products?color=Black&brand=OnePlus
 // http://localhost:3000/api/products?product_type=Accessories
+// api/products?product_type=Accessories&min_price=100&max_price=2000
 
-//gett all products
-app.get("/api/products", (req, res) => {
+// to use sort
+
+// Sort by price ascending - api/products?product_type=Accessories&min_price=100&max_price=2000&sort_by=price&order=DESC
+// Sort by price in descending order - api/products?product_type=Accessories&sort_by=price&order=DESC
+//
+
+//get all products
+app.get("/api/products", async (req, res) => {
+    logger.info(
+        `Received GET request to /api/products with query parameters: ${JSON.stringify(
+            req.query
+        )}`
+    );
+
     const filter = {
         product_type: req.query.product_type,
         color: req.query.color,
@@ -33,13 +47,21 @@ app.get("/api/products", (req, res) => {
             min: req.query.min_price ? parseInt(req.query.min_price) : 0,
             max: req.query.max_price ? parseInt(req.query.max_price) : Infinity,
         },
+        sort_by: req.query.sort_by,
+        order: req.query.order,
     };
-    products.getProductList(filter, (err, products) => {
-        if (err) {
-            return res.status(500).send("Error retrieving products.");
-        }
+    try {
+        const products = await new Promise((resolve, reject) => {
+            getProductList(filter, (err, result) =>
+                err ? reject(err) : resolve(result)
+            );
+        });
+        logger.info(`Sent ${products.length} products in response`);
         res.send(products);
-    });
+    } catch (err) {
+        logger.error(`Error retrieving products: ${err.message}`);
+        res.status(500).send("Error retrieving products.");
+    }
 });
 
 // API endpoint to gett order with order_id

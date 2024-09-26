@@ -1,0 +1,7 @@
+{"level":"error","message":"Error retrieving products: Cannot access 'products' before initialization"}
+{"level":"error","message":"Error retrieving products: Cannot read properties of undefined (reading 'length')"}
+{"level":"error","message":"Error retrieving products: Cannot read properties of undefined (reading 'length')"}
+{"level":"error","message":"Error retrieving products: Cannot read properties of undefined (reading 'length')"}
+{"level":"error","message":"Error retrieving products: Cannot read properties of undefined (reading 'length')"}
+{"level":"error","message":"Error retrieving products: Cannot read properties of undefined (reading 'length')"}
+{"level":"error","message":"Error retrieving products: sortQuery is not defined"}

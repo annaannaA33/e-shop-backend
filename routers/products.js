@@ -1,6 +1,11 @@
 const db = require("../models/database");
+const logger = require("../logger/logger");
 
 const getProductList = (filter = {}, callback) => {
+    logger.info(
+        `Executing getProductList with filter: ${JSON.stringify(filter)}`
+    );
+
     let query = "SELECT * FROM products";
     let params = [];
     let conditions = [];
@@ -30,14 +35,25 @@ const getProductList = (filter = {}, callback) => {
         query += " WHERE " + conditions.join(" AND ");
     }
 
+    if (filter.sort_by && filter.order) {
+        query += ` ORDER BY ${filter.sort_by} ${filter.order}`;
+    }
+
     db.all(query, params, (err, rows) => {
+        logger.debug(`Database query executed: ${query}`);
+
         if (err) {
+            logger.error(`Error executing database query: ${err.message}`);
+
             return callback(err, null);
         }
         if (rows.length === 0) {
-            callback(null, []);
+            logger.info("No products found matching the filter");
+
+            return callback(null, []);
         }
-        callback(null, rows);
+        logger.info(`Found ${rows.length} products`);
+        return callback(null, rows);
     });
 };
 

@@ -7,7 +7,7 @@ npm install sqlite3
 
 npm install better-sqlite3
 npm install dotenv
-
+npm install winston
 --
 run
 nodemon index.js
