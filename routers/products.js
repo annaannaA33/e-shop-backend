@@ -50,7 +50,10 @@ const getProductList = (filter = {}, callback) => {
         if (rows.length === 0) {
             logger.info("No products found matching the filter");
 
-            return callback(null, []);
+            return callback(null, {
+                products: [],
+                message: "No products found",
+            });
         }
         logger.info(`Found ${rows.length} products`);
         return callback(null, rows);

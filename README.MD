@@ -74,3 +74,13 @@ Extend microservice with capability:
 ├── app.js # Основной файл для запуска сервера
 ├── package.json # Файл с зависимостями проекта
 └── README.md
+
+---
+
+check the filters and sort
+http://localhost:3000/api/products?product_type=Accessories&min_price=100&max_price=2000&sort_by=price&order=DESC
+
+{
+"products": [],
+"message": "No products found"
+}
