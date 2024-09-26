@@ -11,54 +11,14 @@ const db = require("./models/database");
 // module.exports
 
 app.use(express.json());
-productModel.increasePopularityScore();
+//productModel.increasePopularityScore();
 productModel.createProductTable();
 productModel.createUsersTable();
 productModel.createOrdersTable();
 productModel.createOrderDetailsTable();
-//products.getProductList();
 
-const getProductList = (filter = {}, callback) => {
-    let query = "SELECT * FROM products";
-    let params = [];
-    let conditions = [];
-
-    if (filter.product_type) {
-        conditions.push("product_type = ?");
-        params.push(filter.product_type);
-    }
-
-    if (filter.color) {
-        conditions.push("color = ?");
-        params.push(filter.color);
-    }
-
-    if (filter.priceRange) {
-        const { min, max } = filter.priceRange;
-        conditions.push("price BETWEEN ? AND ?");
-        params.push(min, max);
-    }
-
-    if (filter.brand) {
-        conditions.push("brand = ?");
-        params.push(filter.brand);
-    }
-
-    if (conditions.length > 0) {
-        query += " WHERE " + conditions.join(" AND ");
-    }
-
-    db.all(query, params, (err, rows) => {
-        if (err) {
-            return callback(err, null);
-        }
-        if (rows.length === 0) {
-            callback(null, []);
-        }
-        callback(null, rows);
-    });
-};
-
+// to test filters
+// http://localhost:3000/api/products?color=Black&min_price=0&max_price=100
 // http://localhost:3000/api/products?color=Black
 // http://localhost:3000/api/products?color=Black&brand=OnePlus
 // http://localhost:3000/api/products?product_type=Accessories
@@ -74,7 +34,7 @@ app.get("/api/products", (req, res) => {
             max: req.query.max_price ? parseInt(req.query.max_price) : Infinity,
         },
     };
-    getProductList(filter, (err, products) => {
+    products.getProductList(filter, (err, products) => {
         if (err) {
             return res.status(500).send("Error retrieving products.");
         }

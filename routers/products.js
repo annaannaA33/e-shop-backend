@@ -22,12 +22,12 @@ const getProductList = (filter = {}, callback) => {
     }
 
     if (filter.brand) {
-        conditions.push(" brand = ?");
+        conditions.push("brand = ?");
         params.push(filter.brand);
     }
 
-    if (conditions.lenght > 0) {
-        query += WHETE + conditions.join(" AND");
+    if (conditions.length > 0) {
+        query += " WHERE " + conditions.join(" AND ");
     }
 
     db.all(query, params, (err, rows) => {
