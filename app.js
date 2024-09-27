@@ -4,6 +4,8 @@ const productModel = require("./models/productModel");
 const { getProductList } = require("./routers/products");
 const db = require("./models/database");
 const logger = require("./logger/logger");
+const helmet = require("helmet");
+
 //const cors = require("cors");
 
 //const cors = require("cors");
@@ -16,6 +18,15 @@ const logger = require("./logger/logger");
 // module.exports
 
 app.use(express.json());
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+        },
+    })
+);
+
 //productModel.increasePopularityScore();
 productModel.createProductTable();
 productModel.createUsersTable();
