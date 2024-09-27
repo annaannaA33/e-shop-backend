@@ -5,7 +5,7 @@ const { getProductList } = require("./routers/products");
 const db = require("./models/database");
 const logger = require("./logger/logger");
 const helmet = require("helmet");
-
+const cors = require("cors");
 //const cors = require("cors");
 
 //const cors = require("cors");
@@ -26,6 +26,7 @@ app.use(
         },
     })
 );
+app.use(cors());
 
 //productModel.increasePopularityScore();
 productModel.createProductTable();
@@ -67,7 +68,9 @@ app.get("/api/products", async (req, res) => {
 });
 
 // API endpoint to gett order with order_id
-
+app.get("/", (req, res) => {
+    res.send("E-shop backend");
+});
 app.get("/api/products/:id", (req, res) => {
     const productId = req.params.id;
     //Call function to get info about the product
