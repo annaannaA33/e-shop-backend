@@ -5,6 +5,8 @@ const { getProductList } = require("./routers/products");
 const db = require("./models/database");
 const logger = require("./logger/logger");
 //const cors = require("cors");
+
+//const cors = require("cors");
 //app.use(cors());
 // import { productModel } from /... <-- best
 // expot const productModel = () => {...}
