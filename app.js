@@ -4,6 +4,12 @@ const productModel = require("./models/productModel");
 const { getProductList } = require("./routers/products");
 const db = require("./models/database");
 const logger = require("./logger/logger");
+const helmet = require("helmet");
+const cors = require("cors");
+//const cors = require("cors");
+
+//const cors = require("cors");
+//app.use(cors());
 // import { productModel } from /... <-- best
 // expot const productModel = () => {...}
 // import productModeeeel from ...
@@ -12,26 +18,21 @@ const logger = require("./logger/logger");
 // module.exports
 
 app.use(express.json());
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+        },
+    })
+);
+app.use(cors());
+
 //productModel.increasePopularityScore();
 productModel.createProductTable();
 productModel.createUsersTable();
 productModel.createOrdersTable();
 productModel.createOrderDetailsTable();
-
-// to use filters
-// http://localhost:3000/api/products?color=Black&min_price=0&max_price=100
-// http://localhost:3000/api/products?color=Black
-// http://localhost:3000/api/products?color=Black&brand=OnePlus
-// http://localhost:3000/api/products?product_type=Mobile phones
-// api/products?product_type=Accessories&min_price=100&max_price=2000
-
-// to use sort
-
-// Sort by price ascending - api/products?product_type=Accessories&min_price=100&max_price=2000&sort_by=price&order=DESC
-// Sort by price in descending order - http://localhost:3000/api/products?sort_by=price&&order=DESC
-// http://localhost:3000/api/products?sort_by=popularity_score&&order=ASC
-// http://localhost:3000/api/products?product_type=Mobile phones&sort_by=price&order=DESC
-// http://localhost:3000/api/products?product_type=Mobile phones&min_price=100&max_price=2000&sort_by=popularity_score&order=DESC
 
 //get all products
 app.get("/api/products", async (req, res) => {
@@ -67,7 +68,9 @@ app.get("/api/products", async (req, res) => {
 });
 
 // API endpoint to gett order with order_id
-
+app.get("/", (req, res) => {
+    res.send("E-shop backend");
+});
 app.get("/api/products/:id", (req, res) => {
     const productId = req.params.id;
     //Call function to get info about the product

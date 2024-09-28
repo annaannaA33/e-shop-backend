@@ -1,4 +1,6 @@
 npm init --yes
+npm audit fix
+npm install helmet
 
 npm install express
 npm install --save-dev nodem
@@ -84,3 +86,18 @@ http://localhost:3000/api/products?product_type=Accessories&min_price=100&max_pr
 "products": [],
 "message": "No products found"
 }
+
+// to use filters
+// http://localhost:3000/api/products?color=Black&min_price=0&max_price=100
+// http://localhost:3000/api/products?color=Black
+// http://localhost:3000/api/products?color=Black&brand=OnePlus
+// http://localhost:3000/api/products?product_type=Mobile phones
+// api/products?product_type=Accessories&min_price=100&max_price=2000
+
+// to use sort
+
+// Sort by price ascending - api/products?product_type=Accessories&min_price=100&max_price=2000&sort_by=price&order=DESC
+// Sort by price in descending order - http://localhost:3000/api/products?sort_by=price&&order=DESC
+// http://localhost:3000/api/products?sort_by=popularity_score&&order=ASC
+// http://localhost:3000/api/products?product_type=Mobile phones&sort_by=price&order=DESC
+// http://localhost:3000/api/products?product_type=Mobile phones&min_price=100&max_price=2000&sort_by=popularity_score&order=DESC
