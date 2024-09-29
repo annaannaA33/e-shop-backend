@@ -1,3 +1,5 @@
+https://e-shop-backend-ag4c.onrender.com/api/products
+
 ## Base URLs
 
 In our project we use the following base URLs for images:
@@ -18,11 +20,28 @@ Galaxy Watch6 40mm White: https://res.cloudinary.com/v1727291642/w_600_1_l5awqr.
 Redmi Buds 4 Black: https://res.cloudinary.com/v1727288044/f_auto_1_avliu6.png
 Airpods Max Silver: https://res.cloudinary.com/v1727288044/w_600_eg26rb.png
 
-to see the api:
-
+to the the api:
 https://e-shop-backend-ag4c.onrender.com
 
-https://e-shop-backend-ag4c.onrender.com/api/products
+check the filters and sort
+http://localhost:3000/api/products?product_type=Accessories&min_price=100&max_price=2000&sort_by=price&order=DESC
+
+to use filters
+http://localhost:3000/api/products?color=Black&min_price=0&max_price=100
+http://localhost:3000/api/products?color=Black
+http://localhost:3000/api/products?color=Black&brand=OnePlus
+http://localhost:3000/api/products?product_type=Mobile phones
+api/products?product_type=Accessories&min_price=100&max_price=2000
+
+to use sort
+
+Sort by price ascending - api/products?product_type=Accessories&min_price=100&max_price=2000&sort_by=price&order=DESC
+Sort by price in descending order - http://localhost:3000/api/products?sort_by=price&&order=DESC
+http://localhost:3000/api/products?sort_by=popularity_score&&order=ASC
+http://localhost:3000/api/products?product_type=Mobile phones&sort_by=price&order=DESC
+http://localhost:3000/api/products?product_type=Mobile phones&min_price=100&max_price=2000&sort_by=popularity_score&order=DESC
+
+---
 
 npm init --yes
 npm audit fix
@@ -87,26 +106,3 @@ Extend microservice with capability:
 └── README.md
 
 ---
-
-check the filters and sort
-http://localhost:3000/api/products?product_type=Accessories&min_price=100&max_price=2000&sort_by=price&order=DESC
-
-{
-"products": [],
-"message": "No products found"
-}
-
-// to use filters
-// http://localhost:3000/api/products?color=Black&min_price=0&max_price=100
-// http://localhost:3000/api/products?color=Black
-// http://localhost:3000/api/products?color=Black&brand=OnePlus
-// http://localhost:3000/api/products?product_type=Mobile phones
-// api/products?product_type=Accessories&min_price=100&max_price=2000
-
-// to use sort
-
-// Sort by price ascending - api/products?product_type=Accessories&min_price=100&max_price=2000&sort_by=price&order=DESC
-// Sort by price in descending order - http://localhost:3000/api/products?sort_by=price&&order=DESC
-// http://localhost:3000/api/products?sort_by=popularity_score&&order=ASC
-// http://localhost:3000/api/products?product_type=Mobile phones&sort_by=price&order=DESC
-// http://localhost:3000/api/products?product_type=Mobile phones&min_price=100&max_price=2000&sort_by=popularity_score&order=DESC

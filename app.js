@@ -11,9 +11,9 @@ const corsOptions = {
     methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
     allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
 };
-
+const cors = require("cors");
 app.use(cors(corsOptions));
-//const cors = require("cors");
+//
 
 //const cors = require("cors");
 // import { productModel } from /... <-- best
@@ -34,13 +34,10 @@ app.use(
 );
 app.use(cors());
 
-//productModel.increasePopularityScore();
 productModel.createProductTable();
 productModel.createUsersTable();
 productModel.createOrdersTable();
 productModel.createOrderDetailsTable();
-
-//e-shop-backend-ag4c.onrender.com/api/products
 
 //get all products
 app.get("/api/products", async (req, res) => {
