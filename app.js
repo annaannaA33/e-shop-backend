@@ -34,8 +34,10 @@ productModel.createUsersTable();
 productModel.createOrdersTable();
 productModel.createOrderDetailsTable();
 
+//e-shop-backend-ag4c.onrender.com/api/products
+
 //get all products
-app.get("/api/products", async (req, res) => {
+https: app.get("/api/products", async (req, res) => {
     logger.info(
         `Received GET request to /api/products with query parameters: ${JSON.stringify(
             req.query
@@ -167,6 +169,7 @@ app.get("/api/orders/:id", (req, res) => {
     });
 });
 
+// https://e-shop-backend-ag4c.onrender.com/api/orders
 app.post("/api/orders", (req, res) => {
     const { productId, userName, userSurname, userEmail, userPhone } = req.body;
 

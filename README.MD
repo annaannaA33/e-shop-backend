@@ -1,3 +1,29 @@
+## Base URLs
+
+In our project we use the following base URLs for images:
+
+iPhone 15 Black: https://res.cloudinary.com/v1727287302/iPhone_15_Black_albt1z.jpg
+iPhone 15 Blue: https://res.cloudinary.com/v1727287304/iPhone_15_Blue_shprwr.jpg
+Galaxy S23 FE Black: https://res.cloudinary.com/v1727287302/Samsung_Galaxy_S23_FE_Black_akgw4o.jpg
+Galaxy S23 FE Blue: https://res.cloudinary.com/v1727287824/Samsung_Galaxy_S23_FE_Blue_kjns9l.webp
+Xperia 10 V Blue: https://res.cloudinary.com/v1727287302/Sony_Xperia_10_V_Blue_fu3rxl.jpg
+Xperia 10 V Green: https://res.cloudinary.com/v1727287302/Sony_Xperia_10_V_Green_Sage_Green_wrel9j.jpg
+Redmi Note 13 Black: https://res.cloudinary.com/v1727287302/Xiaomi_Redmi_Note_13_Black_rd7bpy.png
+Redmi Note 13 Yellow: https://res.cloudinary.com/v1727287303/Xiaomi_Redmi_Note_13_Yellow_otamvu.png
+Redmi Note 13 Pink: https://res.cloudinary.com/v1727287990/Xiaomi_Redmi_Note_13_Pink_ha1fx4.webp
+Nord 3 Green: https://res.cloudinary.com/v1727287303/OnePlus_Nord_3_Green_Misty_Green_nyd6hk.jpg
+Nord 3 Black: https://res.cloudinary.com/v1727287784/OnePlus_Nord_3_Black_grgghu.png
+Galaxy Watch6 40mm Black: https://res.cloudinary.com/v1727288045/f_auto_gxfipm.png
+Galaxy Watch6 40mm White: https://res.cloudinary.com/v1727291642/w_600_1_l5awqr.png
+Redmi Buds 4 Black: https://res.cloudinary.com/v1727288044/f_auto_1_avliu6.png
+Airpods Max Silver: https://res.cloudinary.com/v1727288044/w_600_eg26rb.png
+
+to see the api:
+
+https://e-shop-backend-ag4c.onrender.com
+
+https://e-shop-backend-ag4c.onrender.com/api/products
+
 npm init --yes
 npm audit fix
 npm install helmet
@@ -16,21 +42,6 @@ nodemon index.js
 
 to add products
 node addProducts.js
-
-Display all e-shop products on the main e-shop page “Mobile phones and accessories”.
-
-Product card:
-Brand
-Title
-Picture
-Color
-Price
-Short description
-Stock availability
-Order button
-
-Filters:
-Implement filters to sort products.
 
 Lead Form:
 Products should be ordered via a Lead form.
@@ -51,8 +62,6 @@ Create data base to store products details, stock, orders details, evets and use
 Implement logging so it would be possible to trace system behavior over the time.
 Write unit tests for Java microservices using a testing framework such as JUnit.
 Extend microservice with capability:
-
-[User API] Manage users.
 
 /project-root
 │
