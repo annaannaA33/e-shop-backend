@@ -5,11 +5,17 @@ const { getProductList } = require("./routers/products");
 const db = require("./models/database");
 const logger = require("./logger/logger");
 const helmet = require("helmet");
-const cors = require("cors");
+
+const corsOptions = {
+    origin: ["http://localhost:3000", "http://127.0.0.1:3000"], // Add other ports as needed
+    methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
+};
+
+app.use(cors(corsOptions));
 //const cors = require("cors");
 
 //const cors = require("cors");
-//app.use(cors());
 // import { productModel } from /... <-- best
 // expot const productModel = () => {...}
 // import productModeeeel from ...
@@ -37,7 +43,7 @@ productModel.createOrderDetailsTable();
 //e-shop-backend-ag4c.onrender.com/api/products
 
 //get all products
-https: app.get("/api/products", async (req, res) => {
+app.get("/api/products", async (req, res) => {
     logger.info(
         `Received GET request to /api/products with query parameters: ${JSON.stringify(
             req.query
