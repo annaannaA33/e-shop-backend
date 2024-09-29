@@ -10,14 +10,16 @@ const getProductList = (filter = {}, callback) => {
     let params = [];
     let conditions = [];
 
-    if (filter.product_type) {
-        conditions.push("product_type = ?");
-        params.push(filter.product_type);
+    if (filter.product_type && filter.product_type.length > 0) {
+        conditions.push(
+            `product_type IN (${filter.product_type.map(() => "?").join(", ")})`
+        );
+        params.push(...filter.product_type);
     }
 
-    if (filter.color) {
-        conditions.push("color = ?");
-        params.push(filter.color);
+    if (filter.color && filter.color.length > 0) {
+        conditions.push(`color IN (${filter.color.map(() => "?").join(", ")})`);
+        params.push(...filter.color);
     }
 
     if (filter.priceRange) {
@@ -26,9 +28,9 @@ const getProductList = (filter = {}, callback) => {
         params.push(min, max);
     }
 
-    if (filter.brand) {
-        conditions.push("brand = ?");
-        params.push(filter.brand);
+    if (filter.brand && filter.brand.length > 0) {
+        conditions.push(`brand IN (${filter.brand.map(() => "?").join(", ")})`);
+        params.push(...filter.brand);
     }
 
     if (conditions.length > 0) {

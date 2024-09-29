@@ -13,15 +13,6 @@ const corsOptions = {
 };
 const cors = require("cors");
 app.use(cors(corsOptions));
-//
-
-//const cors = require("cors");
-// import { productModel } from /... <-- best
-// expot const productModel = () => {...}
-// import productModeeeel from ...
-// import PROOODcutModel from ...
-
-// module.exports
 
 app.use(express.json());
 app.use(
@@ -48,9 +39,21 @@ app.get("/api/products", async (req, res) => {
     );
 
     const filter = {
-        product_type: req.query.product_type,
-        color: req.query.color,
-        brand: req.query.brand,
+        product_type: req.query.product_type
+            ? Array.isArray(req.query.product_type)
+                ? req.query.product_type
+                : [req.query.product_type]
+            : [],
+        color: req.query.color
+            ? Array.isArray(req.query.color)
+                ? req.query.color
+                : [req.query.color]
+            : [],
+        brand: req.query.brand
+            ? Array.isArray(req.query.brand)
+                ? req.query.brand
+                : [req.query.brand]
+            : [],
         priceRange: {
             min: req.query.min_price ? parseInt(req.query.min_price) : 0,
             max: req.query.max_price ? parseInt(req.query.max_price) : Infinity,

@@ -20,24 +20,33 @@ Galaxy Watch6 40mm White: https://res.cloudinary.com/v1727291642/w_600_1_l5awqr.
 Redmi Buds 4 Black: https://res.cloudinary.com/v1727288044/f_auto_1_avliu6.png
 Airpods Max Silver: https://res.cloudinary.com/v1727288044/w_600_eg26rb.png
 
-to the the api:
+host:
+http://localhost:3000
+or
 https://e-shop-backend-ag4c.onrender.com
+
+examples to the the api:
 
 check the filters and sort
 http://localhost:3000/api/products?product_type=Accessories&min_price=100&max_price=2000&sort_by=price&order=DESC
 
 to use filters
-http://localhost:3000/api/products?color=Black&min_price=0&max_price=100
-http://localhost:3000/api/products?color=Black
-http://localhost:3000/api/products?color=Black&brand=OnePlus
-http://localhost:3000/api/products?product_type=Mobile phones
-api/products?product_type=Accessories&min_price=100&max_price=2000
+color, min_price /api/products?color=Black&min_price=0&max_price=100
+color /api/products?color=Black
+color, brand /api/products?color=Black&brand=OnePlus
+product_type /api/products?product_type=Mobile phones
 
-to use sort
+to use filter with more then 1 choses:
+
+2 colors /api/products?color=Black&color=Green&min_price=100&max_price=100&sort_by=price&order=DESC
+
+2 brands /api/products?brand=Apple&brand=Xiaomi&sort_by=price&order=DESC
+
+2 product_type /api/products?product_type=Mobile phones&product_type=Accessories&min_price=100&max_price=1000
 
 Sort by price ascending - api/products?product_type=Accessories&min_price=100&max_price=2000&sort_by=price&order=DESC
-Sort by price in descending order - http://localhost:3000/api/products?sort_by=price&&order=DESC
-http://localhost:3000/api/products?sort_by=popularity_score&&order=ASC
+Sort by price in descending order - /api/products?sort_by=price&&order=DESC
+Sort by popularity ASC /api/products?sort_by=popularity_score&&order=ASC
 http://localhost:3000/api/products?product_type=Mobile phones&sort_by=price&order=DESC
 http://localhost:3000/api/products?product_type=Mobile phones&min_price=100&max_price=2000&sort_by=popularity_score&order=DESC
 
