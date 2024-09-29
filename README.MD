@@ -66,11 +66,12 @@ npm install winston
 --
 
 run
-nodemon index.js
+nodemon app.js
 
 to add products
 node addProducts.js
 
+task:
 Lead Form:
 Products should be ordered via a Lead form.
 Validation added to all fields
@@ -113,5 +114,3 @@ Extend microservice with capability:
 ├── app.js # Основной файл для запуска сервера
 ├── package.json # Файл с зависимостями проекта
 └── README.md
-
----

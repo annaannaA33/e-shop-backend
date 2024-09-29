@@ -5,6 +5,8 @@ const { getProductList } = require("./routers/products");
 const db = require("./models/database");
 const logger = require("./logger/logger");
 const helmet = require("helmet");
+const { sendOrderConfirmationEmail } = require("./routers/orders");
+const { registerEmailSentEvent } = require("./routers/orders");
 
 const corsOptions = {
     origin: ["http://localhost:3000", "http://127.0.0.1:3000"], // Add other ports as needed
@@ -176,7 +178,7 @@ app.get("/api/orders/:id", (req, res) => {
 });
 
 // https://e-shop-backend-ag4c.onrender.com/api/orders
-app.post("/api/orders", (req, res) => {
+app.post("/api/orders", async (req, res) => {
     const { productId, userName, userSurname, userEmail, userPhone } = req.body;
 
     // Validation of entered data
@@ -192,7 +194,7 @@ app.post("/api/orders", (req, res) => {
 
     const query = "SELECT * FROM products WHERE product_id = ?";
 
-    db.get(query, [productId], (err, product) => {
+    db.get(query, [productId], async (err, product) => {
         if (err) {
             return res
                 .status(500)
@@ -216,7 +218,7 @@ app.post("/api/orders", (req, res) => {
         db.run(
             userQuery,
             [userName, userSurname, userEmail, userPhone, "customer"],
-            function (err) {
+            async function (err) {
                 if (err) {
                     return res
                         .status(500)
@@ -231,7 +233,7 @@ app.post("/api/orders", (req, res) => {
                 // Creating an order in the database
 
                 const orderQuery = "INSERT INTO orders (user_id) VALUES (?)";
-                db.run(orderQuery, [userId], function (err) {
+                db.run(orderQuery, [userId], async function (err) {
                     if (err) {
                         return res.status(500).send("Error creating order.");
                     }
@@ -248,7 +250,7 @@ app.post("/api/orders", (req, res) => {
                     db.run(
                         orderDetailsQuery,
                         [orderId, productId, totalPrice, "confirmed"],
-                        (err) => {
+                        async (err) => {
                             if (err) {
                                 return res
                                     .status(500)
@@ -260,37 +262,57 @@ app.post("/api/orders", (req, res) => {
 
                             const updateStockQuery =
                                 "UPDATE products SET stockAmount = stockAmount - 1 WHERE product_id = ?";
-                            db.run(updateStockQuery, [productId], (err) => {
-                                if (err) {
-                                    return res
-                                        .status(500)
-                                        .send("Error updating product stock.");
-                                }
-                                console.log(productId, product.stockAmount);
-
-                                productModel.increasePopularityScore(
-                                    productId,
-                                    (err) => {
-                                        if (err) {
-                                            return res
-                                                .status(500)
-                                                .send(
-                                                    "Error updating product popularity."
-                                                );
-                                        }
+                            db.run(
+                                updateStockQuery,
+                                [productId],
+                                async (err) => {
+                                    if (err) {
+                                        return res
+                                            .status(500)
+                                            .send(
+                                                "Error updating product stock."
+                                            );
                                     }
-                                );
+                                    console.log(productId, product.stockAmount);
 
-                                // Sending a response to the client
+                                    productModel.increasePopularityScore(
+                                        productId,
+                                        (err) => {
+                                            if (err) {
+                                                return res
+                                                    .status(500)
+                                                    .send(
+                                                        "Error updating product popularity."
+                                                    );
+                                            }
+                                        }
+                                    );
+                                    try {
+                                        await sendOrderConfirmationEmail(
+                                            orderId,
+                                            userEmail
+                                        );
+                                        registerEmailSentEvent(
+                                            orderId,
+                                            userEmail
+                                        );
+                                    } catch (error) {
+                                        return res
+                                            .status(500)
+                                            .send(error.message);
+                                    }
 
-                                res.send({
-                                    success: true,
-                                    message:
-                                        "Order successfully created, stock updated, popularity updated",
-                                    orderId: orderId,
-                                    userId: userId,
-                                });
-                            });
+                                    // Sending a response to the client
+
+                                    res.send({
+                                        success: true,
+                                        message:
+                                            "Order successfully created, stock updated, popularity updated",
+                                        orderId: orderId,
+                                        userId: userId,
+                                    });
+                                }
+                            );
                         }
                     );
                 });
