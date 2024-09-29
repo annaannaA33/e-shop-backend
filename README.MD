@@ -52,19 +52,19 @@ http://localhost:3000/api/products?product_type=Mobile phones&min_price=100&max_
 
 ---
 
+imports:
 npm init --yes
 npm audit fix
 npm install helmet
-
 npm install express
 npm install --save-dev nodem
 npm i nodemon
 npm install sqlite3
-
 npm install better-sqlite3
 npm install dotenv
 npm install winston
 --
+
 run
 nodemon index.js
 
