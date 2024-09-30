@@ -53,6 +53,8 @@ http://localhost:3000/api/products?product_type=Mobile phones&min_price=100&max_
 ---
 
 imports:
+npm install axios
+
 npm init --yes
 npm audit fix
 npm install helmet

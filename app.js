@@ -6,7 +6,8 @@ const db = require("./models/database");
 const logger = require("./logger/logger");
 const helmet = require("helmet");
 const { sendOrderConfirmationEmail } = require("./routers/orders");
-const { registerEmailSentEvent } = require("./routers/orders");
+const eventOrchestrator = require("./eventOrchestrator/EmailService");
+const axios = require("axios");
 
 const corsOptions = {
     origin: ["http://localhost:3000", "http://127.0.0.1:3000"], // Add other ports as needed
@@ -182,16 +183,14 @@ app.post("/api/orders", async (req, res) => {
     const { productId, userName, userSurname, userEmail, userPhone } = req.body;
 
     // Validation of entered data
-
     if (!productId) {
-        return res.status(400).send("Product ID and valid color are required");
+        return res.status(400).send("Product ID is required");
     }
     if (!userName || !userSurname || !userEmail || !userPhone) {
         return res.status(400).send("All user fields are required");
     }
 
     // Getting product data from the database
-
     const query = "SELECT * FROM products WHERE product_id = ?";
 
     db.get(query, [productId], async (err, product) => {
@@ -206,13 +205,11 @@ app.post("/api/orders", async (req, res) => {
         }
 
         // Checking whether there is a sufficient quantity of goods in stock
-
         if (product.stockAmount < 1) {
             return res.status(400).send("Not enough products in stock.");
         }
 
         // If the product is in stock, create a user
-
         const userQuery =
             "INSERT INTO users (user_name, user_surname, user_email, user_phone, user_role) VALUES (?, ?, ?, ?, ?)";
         db.run(
@@ -227,11 +224,7 @@ app.post("/api/orders", async (req, res) => {
 
                 const userId = this.lastID;
 
-                // userId
-                console.log("New User ID:", userId);
-
                 // Creating an order in the database
-
                 const orderQuery = "INSERT INTO orders (user_id) VALUES (?)";
                 db.run(orderQuery, [userId], async function (err) {
                     if (err) {
@@ -241,11 +234,10 @@ app.post("/api/orders", async (req, res) => {
                     const orderId = this.lastID;
 
                     // Adding order details
-
                     const orderDetailsQuery = `
-                    INSERT INTO orderDetails (order_id, product_id, total_price, order_created_date, order_modify_date, order_status)
-                    VALUES (?, ?, ?, datetime('now'), datetime('now'), ?)
-                `;
+                        INSERT INTO orderDetails (order_id, product_id, total_price, order_created_date, order_modify_date, order_status)
+                        VALUES (?, ?, ?, datetime('now'), datetime('now'), ?)
+                    `;
                     const totalPrice = product.price * 1; // Assuming a default quantity of 1
                     db.run(
                         orderDetailsQuery,
@@ -256,10 +248,8 @@ app.post("/api/orders", async (req, res) => {
                                     .status(500)
                                     .send("Error saving order details.");
                             }
-                            console.log("New order: userId:", userId);
 
                             // Updating the quantity of goods in the database
-
                             const updateStockQuery =
                                 "UPDATE products SET stockAmount = stockAmount - 1 WHERE product_id = ?";
                             db.run(
@@ -273,8 +263,8 @@ app.post("/api/orders", async (req, res) => {
                                                 "Error updating product stock."
                                             );
                                     }
-                                    console.log(productId, product.stockAmount);
 
+                                    // Updating product popularity
                                     productModel.increasePopularityScore(
                                         productId,
                                         (err) => {
@@ -287,30 +277,27 @@ app.post("/api/orders", async (req, res) => {
                                             }
                                         }
                                     );
+
+                                    // Emit event after order creation
                                     try {
-                                        await sendOrderConfirmationEmail(
+                                        eventOrchestrator.emit(
+                                            "orderCreated",
                                             orderId,
                                             userEmail
                                         );
-                                        registerEmailSentEvent(
-                                            orderId,
-                                            userEmail
-                                        );
+
+                                        res.send({
+                                            success: true,
+                                            message:
+                                                "Order successfully created, email event emitted. Stock and popularity updated.",
+                                            orderId: orderId,
+                                            userId: userId,
+                                        });
                                     } catch (error) {
                                         return res
                                             .status(500)
                                             .send(error.message);
                                     }
-
-                                    // Sending a response to the client
-
-                                    res.send({
-                                        success: true,
-                                        message:
-                                            "Order successfully created, stock updated, popularity updated",
-                                        orderId: orderId,
-                                        userId: userId,
-                                    });
                                 }
                             );
                         }
