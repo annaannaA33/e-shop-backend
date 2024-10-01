@@ -6,11 +6,14 @@ const eventEmitter = new events.EventEmitter();
 // TODO Импорт функции отправки email понять как!
 async function sendEmail(to, subject, text) {
     try {
-        const response = await axios.post("http://localhost:5000/sendemail", {
-            to,
-            subject,
-            text,
-        });
+        const response = await axios.post(
+            "https://e-shop-email-microservice.onrender.com/sendemail",
+            {
+                to,
+                subject,
+                text,
+            }
+        );
         return response.data;
     } catch (error) {
         throw new Error("Error sending email");
@@ -30,9 +33,9 @@ eventEmitter.on("orderCreated", async (orderId, userEmail) => {
             text: `Your order with ID ${orderId} has been successfully created. Thank you for shopping with us!`,
         };
         // TODO Вызов функции отправки email через отдельный сервис полумать как сделать
-        //await sendEmail(orderId, userEmail);
+        await sendEmail(orderId, userEmail);
         const response = await axios.post(
-            "http://localhost:5000/sendemail",
+            "https://e-shop-email-microservice.onrender.com/sendemail",
             emailData
         );
 
