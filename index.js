@@ -56,6 +56,7 @@ app.get("/api/products/:id", (req, res) => {
 });
 
 //make the order
+/*
 app.post("/api/orders", (req, res) => {
     const { productId, amount } = req.body;
 
@@ -88,6 +89,68 @@ app.post("/api/orders", (req, res) => {
     }
     })
 
+    res.send({ success: true, createdOrder });
+});
+*/
+app.post("/api/orders", async (req, res) => {
+    const { productId, amount } = req.body;
+
+    // Validate request body
+    if (!productId || !amount) {
+        return res.status(400).send("Product ID and valid amount are required");
+    } else if (amount <= 0) {
+        return res.status(400).send("Amount must be greater than zero");
+    }
+
+    // Find the product in stock
+    const product = products.find((c) => c.id === parseInt(productId));
+
+    if (!product) {
+        return res.status(404).send("Product not found");
+    }
+
+    // Check if enough stock is available
+    if (product.stockAmount < amount) {
+        return res.status(400).send("Not enough product in stock");
+    }
+
+    // Deduct the stock amount
+    product.stockAmount -= amount;
+
+    // Add order to createdOrder list
+    const createdOrder = [];
+    createdOrder.push({ productId, amount });
+
+    // Log the current state of orders and products
+    console.log(createdOrder);
+    console.log(products);
+
+    // Microservice call
+    try {
+        const microserviceResponse = await fetch("http://localhost:3333", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                eventType: 'orderMade',
+                firstName: 'John',  // Replace with actual data
+                lastName: 'Doe'      // Replace with actual data
+            })
+        });
+
+        if (!microserviceResponse.ok) {
+            return res.status(500).send("Failed to notify microservice");
+        }
+
+        const microserviceData = await microserviceResponse.json();
+        console.log('Microservice response:', microserviceData);
+    } catch (error) {
+        console.error('Error calling microservice:', error);
+        return res.status(500).send("Error communicating with microservice");
+    }
+
+    // Send success response
     res.send({ success: true, createdOrder });
 });
 

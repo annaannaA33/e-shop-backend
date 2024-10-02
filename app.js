@@ -5,14 +5,15 @@ const { getProductList } = require("./routers/products");
 const db = require("./models/database");
 const logger = require("./logger/logger");
 const helmet = require("helmet");
+const cors = require("cors");
 
 const corsOptions = {
-    origin: ["http://localhost:3000", "http://127.0.0.1:3000"], // Add other ports as needed
+    origin: ["http://localhost:5173", "http://localhost:3000","http://127.0.0.1:3000", "https://teila-e-shop.netlify.app"], // Add other ports as needed
     methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
     allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
 };
-const cors = require("cors");
 app.use(cors(corsOptions));
+app.options('/api/orders', cors(corsOptions));
 
 app.use(express.json());
 app.use(
@@ -23,7 +24,7 @@ app.use(
         },
     })
 );
-app.use(cors());
+
 
 productModel.createProductTable();
 productModel.createUsersTable();
