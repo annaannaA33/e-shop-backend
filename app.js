@@ -10,7 +10,11 @@ const eventOrchestrator = require("./eventOrchestrator/EmailService");
 const axios = require("axios");
 
 const corsOptions = {
-    origin: ["http://localhost:3000", "http://127.0.0.1:3000"], // Add other ports as needed
+    origin: [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://teila-e-shop.netlify.app/",
+    ], // Add other ports as needed
     methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
     allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
 };

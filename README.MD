@@ -71,7 +71,7 @@ run
 nodemon app.js
 
 to add products
-node addProducts.js
+`npm run db:populate`
 
 task:
 Lead Form:
