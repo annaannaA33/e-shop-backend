@@ -214,6 +214,7 @@ app.post("/api/orders", async (req, res) => {
         }
 
         // If the product is in stock, create a user
+        //TODO also check if user already exist
         const userQuery =
             "INSERT INTO users (user_name, user_surname, user_email, user_phone, user_role) VALUES (?, ?, ?, ?, ?)";
         db.run(
